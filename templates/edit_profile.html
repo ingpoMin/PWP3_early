@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profil</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 pb-20">
+
+    <nav class="p-4 max-w-2xl mx-auto">
+        <a href="profile.html" class="neo-btn bg-white px-3 py-2 rounded-full inline-flex items-center gap-2 text-sm">
+            <i class="ri-arrow-left-line"></i> Batal
+        </a>
+    </nav>
+
+    <main class="max-w-xl mx-auto px-4">
+        <div class="neo-card bg-white p-6">
+            <h2 class="text-xl font-bold mb-6 border-b-2 border-black pb-2">
+                    Edit Profil
+            </h2>
+
+            <form action="profile.html">
+                <div class="flex items-center gap-4 mb-6">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Budi" class="w-16 h-16 rounded-full border-2 border-black bg-gray-200">
+                    <div>
+                        <label class="neo-btn bg-ref-yellow px-3 py-1 rounded text-xs cursor-pointer block text-center">
+                            Upload Foto
+                            <input type="file" class="hidden">
+                        </label>
+                        <p class="text-xs text-gray-500 mt-1">Maks. 2MB</p>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="block font-bold text-sm mb-1">Nama Lengkap</label>
+                        <input type="text" class="neo-input w-full p-2 rounded bg-gray-50" value="Budi Santoso">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-sm mb-1">Username</label>
+                        <input type="text" class="neo-input w-full p-2 rounded bg-gray-50" value="budisans">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-sm mb-1">Bio</label>
+                        <textarea class="neo-input w-full p-2 rounded bg-gray-50" rows="3">Suka kopi, koding, dan kucing. Mencoba membuat dunia lebih berwarna.</textarea>
+                    </div>
+                </div>
+
+                <div class="mt-8 flex gap-3">
+                    <button type="submit" class="neo-btn bg-ref-green w-full py-2 rounded font-bold">Simpan Perubahan</button>
+                </div>
+            </form>
+        </div>
+    </main>
+</body>
+</html>

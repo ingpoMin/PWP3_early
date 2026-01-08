@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feed</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+<body class="pb-20">
+
+    <nav class="bg-ref-purple border-b-4 border-black sticky top-0 z-50 px-4 py-3">
+        <div class="max-w-2xl mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold italic">NeoSocial.</h1>
+            
+            <a href="profile.html" class="flex items-center gap-3 neo-btn bg-white px-3 py-1 rounded-full hover:bg-gray-100">
+                <div class="text-right hidden sm:block">
+                    <p class="text-sm font-bold leading-tight">{{ user.full_name }}</p>
+                    <p class="text-xs text-gray-500">@{{ user.username }}</p>
+                </div>
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Budi" class="w-10 h-10 rounded-full border-2 border-black bg-gray-200">
+            </a>
+        </div>
+    </nav>
+
+    <main class="max-w-2xl mx-auto mt-6 px-4">
+        
+        <div class="neo-card bg-white p-4 mb-8">
+            <textarea class="w-full bg-gray-50 p-3 rounded-lg border-2 border-gray-200 focus:border-black outline-none resize-none" rows="3" placeholder="Apa yang sedang terjadi?"></textarea>
+            <div class="flex justify-between items-center mt-3">
+                <div class="flex gap-2 text-xl text-gray-600">
+                    <button class="hover:text-blue-500"><i class="ri-image-add-line"></i></button>
+                    <button class="hover:text-green-500"><i class="ri-video-add-line"></i></button>
+                </div>
+                <button class="neo-btn bg-ref-blue px-6 py-2 rounded-lg text-sm">Posting</button>
+            </div>
+        </div>
+
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="font-bold text-xl">Timeline</h2>
+            <button class="neo-btn bg-yellow-300 px-3 py-1 rounded-lg text-xs flex items-center gap-1">
+                <i class="ri-message-3-line"></i> Buka Chat
+            </button>
+        </div>
+
+{% for post in posts %}
+<article class="neo-card bg-ref-blue p-5 mb-6 relative">
+    <div class="flex items-center gap-3 mb-3">
+         <img src="https://api.dicebear.com/7.x/avataaars/svg?seed={{ post.username }}" class="w-10 h-10 rounded-full border-2 border-black bg-white">
+        <div>
+            <h3 class="font-bold text-sm">{{ post.full_name }}</h3>
+            <p class="text-xs opacity-70">@{{ post.username }} • {{ post.created_at }}</p>
+        </div>
+    </div>
+    <p class="mb-4 font-medium text-slate-800">{{ post.caption }}</p>
+
+    </article>
+{% endfor %}
+
+    </main>
+</body>
+</html>

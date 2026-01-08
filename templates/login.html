@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Masuk - NeoSocial</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="flex items-center justify-center min-h-screen bg-slate-50">
+
+    <div class="neo-card bg-ref-cyan p-8 w-full max-w-md m-4 relative overflow-hidden">
+        <div class="absolute top-0 right-0 bg-yellow-300 border-l-2 border-b-2 border-black px-3 py-1 font-bold text-xs">NEW!</div>
+        
+        <h1 class="text-4xl font-bold mb-2">Hai! 👋</h1>
+        <p class="mb-6 font-medium">Masuk untuk melihat feed temanmu.</p>
+
+        <form action="{{ url_for('login') }}" method="POST"> <div class="mb-4">
+                <label class="block font-bold mb-1">Username</label>
+                <input type="text" name ="username"class="neo-input w-full p-3 rounded-lg bg-white" placeholder="@namamu">
+            </div>
+            
+            <div class="mb-6">
+                <label class="block font-bold mb-1">Password</label>
+                <input type="password" name="password" class="neo-input w-full p-3 rounded-lg bg-white" placeholder="********">
+            </div>
+
+            <button type="submit" class="neo-btn bg-ref-orange text-black w-full py-3 rounded-lg text-lg hover:bg-orange-400">
+                Masuk Sekarang
+            </button>
+        </form>
+        <p class="mt-4 text-center text-sm">
+            Belum punya akun? <a href="register.html" class="font-bold underline">Daftar di sini</a>
+        </p>
+    </div>
+
+</body>
+</html>

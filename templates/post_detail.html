@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Komentar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 pb-20">
+
+    <nav class="bg-white border-b-4 border-black sticky top-0 z-50 px-4 py-3 mb-6">
+        <div class="max-w-2xl mx-auto flex items-center gap-3">
+            <a href="feed.html" class="neo-btn bg-gray-100 p-2 rounded-full"><i class="ri-arrow-left-line"></i></a>
+            <h1 class="text-xl font-bold">Postingan</h1>
+        </div>
+    </nav>
+
+    <main class="max-w-2xl mx-auto px-4">
+        
+        <article class="neo-card bg-ref-blue p-5 mb-8">
+            <div class="flex items-center gap-3 mb-3">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" class="w-10 h-10 rounded-full border-2 border-black bg-white">
+                <div>
+                    <h3 class="font-bold text-sm">Felix Kjellberg</h3>
+                    <p class="text-xs opacity-70">@pewdiepie</p>
+                </div>
+            </div>
+            <p class="mb-4 text-lg font-medium text-slate-800">
+                Baru saja mencoba resep baru, ternyata gosong! 😂 Ada yang punya tips masak nasi goreng anti gagal?
+            </p>
+            <div class="flex gap-4 border-t-2 border-black/10 pt-3 mt-2">
+                <button class="font-bold text-sm text-red-500"><i class="ri-heart-fill"></i> 124 Like</button>
+                <button class="font-bold text-sm"><i class="ri-chat-1-line"></i> 2 Komentar</button>
+            </div>
+        </article>
+
+        <div class="flex gap-2 mb-8 items-start">
+            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Budi" class="w-10 h-10 rounded-full border-2 border-black bg-white">
+            <div class="flex-1">
+                <textarea class="neo-input w-full p-3 rounded-lg bg-white mb-2" rows="2" placeholder="Tulis balasanmu..."></textarea>
+                <button class="neo-btn bg-ref-green px-4 py-2 rounded text-sm float-right">Kirim Balasan</button>
+            </div>
+        </div>
+
+        <h3 class="font-bold text-lg mb-4 border-b-2 border-black inline-block">Semua Komentar</h3>
+
+        <div class="mb-6">
+            <div class="neo-card bg-white p-4">
+                <div class="flex justify-between items-start mb-2">
+                    <div class="flex items-center gap-2">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Chef" class="w-8 h-8 rounded-full border border-black">
+                        <span class="font-bold text-sm">Chef Juna</span>
+                    </div>
+                    <span class="text-xs text-gray-500">10m</span>
+                </div>
+                <p class="text-sm mb-3">Api-nya jangan terlalu besar bro, terus nasinya harus nasi pera (nasi kemarin).</p>
+                
+                <div class="flex gap-4 text-xs font-bold text-gray-500">
+                    <button class="hover:text-red-500">Like</button>
+                    <details class="group relative">
+                        <summary class="cursor-pointer hover:text-blue-500 list-none">Balas</summary>
+                        <div class="absolute top-full left-0 mt-2 w-64 z-10">
+                            <input type="text" class="neo-input w-full p-2 text-xs bg-gray-50 rounded" placeholder="Balas Chef Juna...">
+                            <button class="neo-btn bg-black text-white px-2 py-1 text-xs mt-1 w-full">Kirim</button>
+                        </div>
+                    </details>
+                </div>
+            </div>
+
+            <div class="reply-line mt-3">
+                <div class="neo-card bg-gray-50 p-3">
+                    <div class="flex items-center gap-2 mb-1">
+                         <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" class="w-6 h-6 rounded-full border border-black">
+                         <span class="font-bold text-xs">Felix Kjellberg</span>
+                         <span class="bg-gray-200 text-[10px] px-1 rounded border border-black">Author</span>
+                    </div>
+                    <p class="text-xs">Wah siap chef! Besok saya coba lagi.</p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+</body>
+</html>

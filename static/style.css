@@ -1,0 +1,54 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap');
+
+body {
+    font-family: 'Outfit', sans-serif;
+    background-color: #f8fafc;
+}
+
+/* KELAS UTAMA: Membuat kotak seperti referensi */
+.neo-card {
+    border: 3px solid #000000;
+    border-radius: 12px;
+    box-shadow: 6px 6px 0px 0px #000000; /* Shadow hitam pekat */
+    transition: all 0.2s ease;
+}
+
+/* Efek saat diklik (tombol/kartu seolah ditekan) */
+.neo-card:active, .neo-btn:active {
+    transform: translate(3px, 3px);
+    box-shadow: 3px 3px 0px 0px #000000;
+}
+
+.neo-btn {
+    border: 2px solid #000000;
+    box-shadow: 4px 4px 0px 0px #000000;
+    font-weight: bold;
+    transition: all 0.1s;
+    cursor: pointer;
+}
+
+.neo-input {
+    border: 2px solid #000;
+    box-shadow: 4px 4px 0px 0px #ddd; /* Shadow input lebih halus */
+    outline: none;
+}
+.neo-input:focus {
+    box-shadow: 4px 4px 0px 0px #000;
+}
+
+/* Palet Warna Persis Referensi */
+.bg-ref-blue { background-color: #bae6fd; }   /* Biru Langit */
+.bg-ref-purple { background-color: #d8b4fe; } /* Ungu */
+.bg-ref-orange { background-color: #fdba74; } /* Oranye */
+.bg-ref-cyan { background-color: #a5f3fc; }   /* Cyan Overlay */
+
+/* ... css sebelumnya ... */
+.bg-ref-green { background-color: #86efac; }  /* Hijau Mint */
+.bg-ref-yellow { background-color: #fef08a; } /* Kuning Lembut */
+
+/* Utility untuk Comment Thread (Garis pinggir komentar balasan) */
+.reply-line {
+    border-left: 3px solid #000;
+    padding-left: 1rem;
+    margin-left: 1rem;
+}
