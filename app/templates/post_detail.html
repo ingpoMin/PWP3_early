@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Postingan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://zurb.github.io/tribute/dist/tribute.css" />
+    <script src="https://zurb.github.io/tribute/dist/tribute.js"></script>
+</head>
+<body class="bg-gray-100 pb-20">
+
+    <nav class="bg-white border-b-4 border-black sticky top-0 z-50 px-4 py-3 mb-6">
+        <div class="max-w-2xl mx-auto flex items-center gap-3">
+            <a href="{{ url_for('feed.feed') }}" class="neo-btn bg-gray-100 p-2 rounded-full">
+                <i class="ri-arrow-left-line"></i>
+            </a>
+            <h1 class="text-xl font-bold">Postingan</h1>
+        </div>
+    </nav>
+
+    <main class="max-w-2xl mx-auto px-4">
+        
+        <article class="neo-card bg-ref-blue p-5 mb-8 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+            <div class="flex justify-between items-start mb-3"> 
+                <div class="flex items-center gap-3">
+                    <a href="{{ url_for('feed.profile', username=post.username) }}">
+                        <img src="{{ url_for('static', filename='uploads/' + post.profile_pic) }}" 
+                             class="w-10 h-10 rounded-full border-2 border-black bg-white object-cover"
+                             onerror="this.src='https://api.dicebear.com/7.x/avataaars/svg?seed={{ post.username }}'">
+                    </a>
+                    <div>
+                        <a href="{{ url_for('feed.profile', username=post.username) }}" class="hover:underline decoration-2">
+                            <h3 class="font-bold text-sm">{{ post.full_name }}</h3>
+                        </a>
+                        <p class="text-xs opacity-70">@{{ post.username }} • {{ post.created_at }}</p>
+                    </div>
+                </div>
+                
+                {% if post.user_id == session['id'] %}
+                    <a href="{{ url_for('post.delete_post', post_id=post.id) }}" 
+                       onclick="return confirm('Hapus postingan ini selamanya?')"
+                       class="bg-white p-1 rounded border-2 border-transparent hover:border-black text-red-500 hover:bg-red-100">
+                        <i class="ri-delete-bin-line"></i>
+                    </a>
+                {% endif %}
+            </div>
+            
+            {% if post.caption %}
+                <p class="text-sm font-medium">{{ post.caption | linkify_mentions | safe }}</p>
+            {% endif %}
+
+            {% if post.media_type == 'image' %}
+                <div class="mb-4 rounded-lg overflow-hidden border-2 border-black">
+                    <img src="{{ url_for('static', filename='uploads/' + post.media_url) }}" class="w-full object-cover">
+                </div>
+            {% elif post.media_type == 'video' %}
+                <div class="mb-4 rounded-lg overflow-hidden border-2 border-black">
+                    <video controls class="w-full">
+                        <source src="{{ url_for('static', filename='uploads/' + post.media_url) }}" type="video/mp4">
+                    </video>
+                </div>
+            {% endif %}
+
+            <div class="flex gap-4 border-t-2 border-black/10 pt-3 mt-2">
+                <button onclick="toggleLikePost({{ post.id }})" class="font-bold text-sm flex items-center gap-1 hover:text-red-500 transition-colors">
+                    <i id="icon-post-{{ post.id }}" class="{{ 'ri-heart-fill text-red-500' if post.user_has_liked > 0 else 'ri-heart-fill text-black/20' }}"></i> 
+                    <span id="count-post-{{ post.id }}">{{ post.like_count }} Like</span>
+                </button>
+                <button class="font-bold text-sm"><i class="ri-chat-1-line"></i> {{ comment_count }} Komentar</button>
+            </div>
+        </article>
+
+        <div class="flex gap-2 mb-8 items-start">
+            <a href="{{ url_for('feed.profile', username=user.username) }}">
+                <img src="{{ url_for('static', filename='uploads/' + user.profile_pic) }}" 
+                     class="w-10 h-10 rounded-full border-2 border-black bg-white object-cover hover:scale-105 transition-transform"
+                     onerror="this.src='https://api.dicebear.com/7.x/avataaars/svg?seed={{ user.username }}'">
+            </a>
+            <div class="flex-1">
+                <form action="{{ url_for('post.add_comment', post_id=post.id) }}" method="POST">
+                    <input type="hidden" name="parent_id" value="">
+                    <textarea name="content" class="neo-input w-full p-3 rounded-lg bg-white mb-2 border-2 border-black focus:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] outline-none" rows="2" placeholder="Tulis komentar..." required></textarea>
+                    <button type="submit" class="neo-btn bg-ref-green px-4 py-2 rounded text-sm float-right font-bold border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all">Kirim</button>
+                </form>
+            </div>
+        </div>
+
+        <h3 class="font-bold text-lg mb-4 border-b-2 border-black inline-block">Semua Komentar</h3>
+
+        <div class="mb-20 space-y-6">
+            {% for parent in parents %}
+            <div>
+                <div class="neo-card bg-white p-4 border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] relative z-10">
+                    <div class="flex justify-between items-start mb-2">
+                        <div class="flex items-center gap-2">
+                            <a href="{{ url_for('feed.profile', username=parent.username) }}">
+                                <img src="{{ url_for('static', filename='uploads/' + parent.profile_pic) }}" 
+                                     class="w-8 h-8 rounded-full border border-black bg-gray-100 object-cover hover:scale-105 transition-transform"
+                                     onerror="this.src='https://api.dicebear.com/7.x/avataaars/svg?seed={{ parent.username }}'">
+                            </a>
+                            <div>
+                                <a href="{{ url_for('feed.profile', username=parent.username) }}" class="hover:underline decoration-2">
+                                    <p class="font-bold text-sm leading-none">{{ parent.full_name }}</p>
+                                </a>
+                                <p class="text-[10px] text-gray-500">{{ parent.created_at }}</p>
+                            </div>
+                        </div>
+                        
+                        {% if parent.user_id == session['id'] %}
+                        <a href="{{ url_for('post.delete_comment', comment_id=parent.id) }}" 
+                           onclick="return confirm('Hapus komentar?')"
+                           class="text-gray-400 hover:text-red-500 text-xs">
+                            <i class="ri-delete-bin-line"></i>
+                        </a>
+                        {% endif %}
+                    </div>
+                    <p class="text-sm mb-3 text-gray-800">{{ parent.content | linkify_mentions | safe }}</p>
+                    
+                    <div class="flex gap-4 text-xs font-bold text-gray-500 items-center">
+                        <button onclick="toggleLikeComment({{ parent.id }})" class="hover:text-red-500 flex items-center gap-1">
+                            <i id="icon-comment-{{ parent.id }}" class="{{ 'ri-heart-fill text-red-500' if parent.user_has_liked > 0 else 'ri-heart-line' }}"></i> 
+                            <span id="count-comment-{{ parent.id }}" class="{{ 'text-red-500' if parent.user_has_liked > 0 else '' }}">{{ parent.like_count }}</span>
+                        </button>
+
+                        <details class="group relative">
+                            <summary class="cursor-pointer hover:text-blue-500 list-none flex items-center gap-1">
+                                <i class="ri-reply-line"></i> Balas
+                            </summary>
+                            <div class="absolute top-full left-0 mt-2 w-64 z-20">
+                                <form action="{{ url_for('post.add_comment', post_id=post.id) }}" method="POST" class="bg-white p-2 border-2 border-black shadow-lg rounded">
+                                    <input type="hidden" name="parent_id" value="{{ parent.id }}">
+                                    <input type="text" name="comment_text" class="neo-input w-full p-2 text-xs bg-gray-50 rounded border border-gray-300 mb-2" placeholder="Balas {{ parent.username }}..." required>
+                                    <button class="neo-btn bg-black text-white px-3 py-1 text-xs w-full font-bold">Kirim Balasan</button>
+                                </form>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+
+                {% if parent.id in replies %}
+                <div class="ml-8 mt-[-10px] pt-4 pl-4 border-l-4 border-gray-300 space-y-3">
+                    {% for reply in replies[parent.id] %}
+                    <div class="neo-card bg-gray-50 p-3 border-2 border-black border-l-4">
+                        <div class="flex justify-between items-start mb-1">
+                            <div class="flex items-center gap-2">
+                                <a href="{{ url_for('feed.profile', username=reply.username) }}">
+                                    <img src="{{ url_for('static', filename='uploads/' + reply.profile_pic) }}" 
+                                         class="w-6 h-6 rounded-full border border-black bg-white object-cover hover:scale-105 transition-transform"
+                                         onerror="this.src='https://api.dicebear.com/7.x/avataaars/svg?seed={{ reply.username }}'">
+                                </a>
+                                <a href="{{ url_for('feed.profile', username=reply.username) }}" class="hover:underline decoration-2">
+                                    <span class="font-bold text-xs">{{ reply.full_name }}</span>
+                                </a>
+                            </div>
+
+                            {% if reply.user_id == session['id'] %}
+                                <a href="{{ url_for('post.delete_comment', comment_id=reply.id) }}" 
+                                   onclick="return confirm('Hapus balasan?')"
+                                   class="text-gray-400 hover:text-red-500 text-[10px]">
+                                    <i class="ri-delete-bin-line"></i>
+                                </a>
+                            {% endif %}
+                        </div>
+                        <p class="text-xs mb-2">{{ reply.content }}</p>
+                        <button onclick="toggleLikeComment({{ reply.id }})" class="text-[10px] font-bold text-gray-500 hover:text-red-500 flex items-center gap-1">
+                            <i id="icon-comment-{{ reply.id }}" class="{{ 'ri-heart-fill text-red-500' if reply.user_has_liked > 0 else 'ri-heart-line' }}"></i> 
+                            <span id="count-comment-{{ reply.id }}" class="{{ 'text-red-500' if reply.user_has_liked > 0 else '' }}">{{ reply.like_count }}</span>
+                        </button>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+
+    </main>
+
+    <script>
+        function toggleLikePost(postId) {
+            fetch(`/api/like_post/${postId}`, { method: 'POST' })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    const icon = document.getElementById(`icon-post-${postId}`);
+                    const count = document.getElementById(`count-post-${postId}`);
+                    count.innerText = data.new_count + " Like";
+                    if (data.liked) {
+                        icon.className = "ri-heart-fill text-red-500";
+                    } else {
+                        icon.className = "ri-heart-fill text-black/20";
+                    }
+                }
+            });
+        }
+
+        function toggleLikeComment(commentId) {
+            fetch(`/api/like_comment/${commentId}`, { method: 'POST' })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    const icon = document.getElementById(`icon-comment-${commentId}`);
+                    const count = document.getElementById(`count-comment-${commentId}`);
+                    count.innerText = data.new_count;
+                    if (data.liked) {
+                        icon.className = "ri-heart-fill text-red-500";
+                        count.className = "text-red-500";
+                    } else {
+                        icon.className = "ri-heart-line";
+                        count.className = "";
+                    }
+                }
+            });
+        }
+            var tribute = new Tribute({
+            values: function (text, cb) {
+                fetch('/api/search_users?q=' + text)
+                    .then(res => res.json())
+                    .then(data => cb(data));
+            },
+            lookup: 'username',
+            fillAttr: 'username',
+            selectTemplate: function (item) {
+                return '@' + item.original.username;
+            }
+        });
+        tribute.attach(document.querySelectorAll('textarea, input[name="content"]'));
+    </script>
+</body>
+</html>

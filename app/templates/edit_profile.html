@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profil</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 pb-20">
+
+    <nav class="p-4 max-w-2xl mx-auto">
+        <a href="{{ url_for('feed.profile', username=user.username) }}" class="neo-btn bg-white px-3 py-2 rounded-full inline-flex items-center gap-2 text-sm">
+            <i class="ri-arrow-left-line"></i> Batal
+        </a>
+    </nav>
+
+    <main class="max-w-xl mx-auto px-4">
+        <div class="neo-card bg-white p-6 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+            <h2 class="text-xl font-bold mb-6 border-b-2 border-black pb-2">Edit Profil</h2>
+
+            <form action="{{ url_for('feed.edit_profile') }}" method="POST" enctype="multipart/form-data">
+                
+                <div class="flex items-center gap-4 mb-6">
+                    <img id="imgPreview" src="{{ url_for('static', filename='uploads/' + user.profile_pic) }}" 
+                         class="w-16 h-16 rounded-full border-2 border-black bg-gray-200 object-cover"
+                         onerror="this.src='https://api.dicebear.com/7.x/avataaars/svg?seed={{ user.username }}'">
+                    
+                    <div>
+                        <label class="neo-btn bg-yellow-300 px-3 py-1 rounded text-xs cursor-pointer block text-center border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px] transition-all font-bold">
+                            Ganti Foto
+                            <input type="file" name="profile_pic" class="hidden" accept="image/*" onchange="previewImage(this)">
+                        </label>
+                        <p class="text-xs text-gray-500 mt-1">Maks. 2MB (JPG/PNG)</p>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="block font-bold text-sm mb-1">Nama Lengkap</label>
+                        <input type="text" name="full_name" class="neo-input w-full p-2 rounded bg-gray-50 border-2 border-black" value="{{ user.full_name }}" required>
+                    </div>
+                    <div>
+                        <label class="block font-bold text-sm mb-1">Username</label>
+                        <input type="text" name="username" class="neo-input w-full p-2 rounded bg-gray-50 border-2 border-black" value="{{ user.username }}" required>
+                    </div>
+                    <div>
+                        <label class="block font-bold text-sm mb-1">Bio</label>
+                        <textarea name="bio" class="neo-input w-full p-2 rounded bg-gray-50 border-2 border-black" rows="3">{{ user.bio }}</textarea>
+                    </div>
+                </div>
+
+                <div class="mt-8">
+                    <button type="submit" class="neo-btn bg-ref-green w-full py-2 rounded font-bold border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all">Simpan Perubahan</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        function previewImage(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('imgPreview').src = e.target.result;
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+</body>
+</html>

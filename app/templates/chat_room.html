@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat {{ partner.username }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <style>
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="bg-gray-100 h-screen flex flex-col">
+
+    <nav class="bg-white border-b-4 border-black px-4 py-3 shrink-0 z-50 flex items-center gap-3">
+        <a href="{{ url_for('chat.chat_list') }}" class="px-2 py-1 rounded-full hover:bg-gray-200">
+            <i class="ri-arrow-left-line"></i>
+        </a>
+        <div class="flex items-center gap-2">
+            <img src="{{ url_for('static', filename='uploads/' + partner.profile_pic) }}" 
+                 class="w-10 h-10 rounded-full border-2 border-black bg-white object-cover"
+                 onerror="this.src='https://api.dicebear.com/7.x/avataaars/svg?seed={{ partner.username }}'">
+            <h1 class="font-bold text-sm">
+                {{ partner.full_name }} <span class="text-green-500 text-xs">● Online</span>
+            </h1>
+        </div>
+    </nav>
+
+    <main class="flex-1 max-w-2xl mx-auto w-full p-4 overflow-y-auto no-scrollbar flex flex-col gap-3 pb-24" id="chatContainer">
+        <div class="text-center text-gray-400 text-sm mt-10" id="loadingText">Memuat pesan...</div>
+    </main>
+
+    <div class="fixed bottom-0 left-0 right-0 bg-white border-t-4 border-black p-4 z-50">
+        <div class="max-w-2xl mx-auto flex gap-2">
+            <input type="text" id="messageInput" class="flex-1 bg-gray-50 border-2 border-black p-3 rounded-lg outline-none" placeholder="Ketik pesan..." autocomplete="off">
+            <button onclick="sendMessage()" class="bg-black text-white px-4 rounded-lg font-bold hover:bg-gray-800">
+                <i class="ri-send-plane-fill"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const partnerUsername = "{{ partner.username }}";
+        const chatContainer = document.getElementById('chatContainer');
+        const messageInput = document.getElementById('messageInput');
+        let lastMessageCount = 0;
+
+        function fetchMessages() {
+            fetch(`/api/get_chat/${partnerUsername}`)
+            .then(res => res.json())
+            .then(data => {
+                const messages = data.messages;
+                const myId = data.my_id;
+
+                if (messages.length !== lastMessageCount) {
+                    chatContainer.innerHTML = ""; 
+                    
+                    messages.forEach(msg => {
+                        const isMe = msg.sender_id === myId;
+                        const align = isMe ? "self-end" : "self-start";
+                        const bg = isMe ? "bg-green-200" : "bg-white";
+                        const rounded = isMe ? "rounded-tl-2xl rounded-tr-2xl rounded-bl-2xl" : "rounded-tl-2xl rounded-tr-2xl rounded-br-2xl";
+
+                        const html = `
+                            <div class="${align} max-w-[80%]">
+                                <div class="${bg} px-4 py-2 ${rounded} text-sm border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                                    ${msg.message}
+                                </div>
+                                <p class="text-[10px] text-gray-500 mt-1 ${isMe ? 'text-right' : ''}">${msg.created_at}</p>
+                            </div>
+                        `;
+                        chatContainer.innerHTML += html;
+                    });
+
+                    chatContainer.scrollTop = chatContainer.scrollHeight;
+                    lastMessageCount = messages.length;
+                }
+            });
+        }
+
+        function sendMessage() {
+            const text = messageInput.value;
+            if (!text.trim()) return;
+
+            fetch('/api/send_message', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    receiver_username: partnerUsername,
+                    message: text
+                })
+            }).then(() => {
+                messageInput.value = "";
+                fetchMessages();
+            });
+        }
+
+        messageInput.addEventListener("keypress", function(event) {
+            if (event.key === "Enter") sendMessage();
+        });
+
+        fetchMessages();
+        setInterval(fetchMessages, 2000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feed NeoSocial</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://zurb.github.io/tribute/dist/tribute.css" />
+    <script src="https://zurb.github.io/tribute/dist/tribute.js"></script>
+    <style>
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .tribute-container ul { background: white; 
+            border: 2px solid black; 
+            shadow: 4px 4px 0px 0px #000; 
+        }
+        .tribute-container li.highlight { 
+            background: #FFD700; 
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-black font-sans pb-20">
+
+    <nav class="bg-[#9370DB] border-b-4 border-black sticky top-0 z-50 px-4 py-3 shadow-md">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold italic text-white drop-shadow-[2px_2px_0_#000]"></h1>
+            
+            <div class="flex items-center gap-4">
+                <a href="{{ url_for('feed.my_profile') }}" class="flex items-center gap-3 bg-white px-3 py-1 rounded-full border-2 border-black hover:bg-gray-100 transition shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none">
+                    <div class="text-right hidden sm:block">
+                        <p class="text-sm font-bold leading-tight">{{ user.full_name }}</p>
+                        <p class="text-xs text-gray-500">@{{ user.username }}</p>
+                    </div>
+                    <img src="{{ url_for('static', filename='uploads/' + user.profile_pic) }}" 
+                         class="w-10 h-10 rounded-full border-2 border-black bg-gray-200 object-cover"
+                         onerror="this.src='https://api.dicebear.com/7.x/avataaars/svg?seed={{ user.username }}'">
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto mt-6 px-4 grid grid-cols-1 md:grid-cols-4 gap-6">
+
+        <aside class="hidden md:block md:col-span-1 h-fit sticky top-24">
+            <div class="bg-white border-2 border-[#FFD700] p-4 rounded-lg shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                <h3 class="font-bold mb-4 flex items-center gap-2"><i class="ri-notification-3-line"></i> Notifikasi</h3>
+                <div class="space-y-3 max-h-60 overflow-y-auto no-scrollbar">
+                    {% if notifications %}
+                        {% for notif in notifications %}
+                        <div class="text-sm border-b border-gray-100 pb-2">
+                            <p>
+                                <strong>{{ notif.sender_name }}</strong>
+                                {% if notif.category == 'like' %} menyukai postinganmu ❤️
+                                {% elif notif.category == 'comment' %} mengomentari postinganmu 💬
+                                {% elif notif.category == 'mention' %}<span class="text-blue-600 font-bold">menyebut Anda</span> dalam sebuah postingan 🏷️
+                                {% elif notif.category == 'follow' %} mulai mengikuti Anda ➕
+                                {% elif notif.category == 'message' %} mengirim pesan baru 📩
+                                {% endif %}
+                            </p>
+                            <small class="text-gray-400 text-xs">{{ notif.timestamp.strftime('%d %b, %H:%M') }}</small>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-gray-400 text-xs">Belum ada notifikasi baru.</p>
+                    {% endif %}
+                </div>
+
+                <hr class="border-0 h-1 bg-[#9370DB] my-4 rounded-full">
+
+                <h3 class="font-bold mb-4 flex items-center gap-2"><i class="ri-user-add-line"></i> Saran Teman</h3>
+                <div class="space-y-4">
+                    {% if suggestions %}
+                        {% for s_user in suggestions %}
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <img src="{{ url_for('static', filename='uploads/' + s_user.profile_pic) }}" 
+                                     class="w-8 h-8 rounded-full border border-black object-cover"
+                                     onerror="this.src='https://api.dicebear.com/7.x/avataaars/svg?seed={{ s_user.username }}'">
+                                <div class="flex flex-col">
+                                    <span class="font-bold text-xs">{{ s_user.username }}</span>
+                                    <span class="text-[10px] text-gray-500">Suggested</span>
+                                </div>
+                            </div>
+                            <a href="{{ url_for('feed.follow', user_id=s_user.id) }}" 
+                               class="bg-[#FFD700] text-black px-2 py-1 rounded text-[10px] border border-black font-bold hover:bg-yellow-400 transition">
+                                + Follow
+                            </a>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-gray-400 text-xs">Tidak ada saran.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </aside>
+
+        <main class="md:col-span-2">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="font-bold text-xl bg-black text-white px-2 py-1 transform -rotate-1 inline-block">Timeline</h2>
+                <a href="{{ url_for('chat.chat_list') }}" class="bg-yellow-300 px-3 py-1 rounded-lg text-xs font-bold border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all flex items-center gap-1">
+                    <i class="ri-message-3-line"></i> Chat
+                </a>
+            </div>
+
+            {% for post in posts %}
+            <article class="bg-white p-5 mb-6 relative border-2 border-black rounded-lg shadow-[5px_5px_0px_0px_rgba(147,112,219,1)] hover:shadow-[2px_2px_0px_0px_rgba(147,112,219,1)] transition-all">
+                <div class="flex items-center gap-3 mb-3">
+                    <a href="{{ url_for('feed.profile', username=post.username) }}">
+                        <img src="{{ url_for('static', filename='uploads/' + post.profile_pic) }}" 
+                             class="w-10 h-10 rounded-full border-2 border-black bg-white hover:scale-105 transition-transform object-cover"
+                             onerror="this.src='https://api.dicebear.com/7.x/avataaars/svg?seed={{ post.username }}'">
+                    </a>
+                    <div>
+                        <a href="{{ url_for('feed.profile', username=post.username) }}" class="hover:underline decoration-2">
+                            <h3 class="font-bold text-sm">{{ post.full_name }}</h3>
+                        </a>
+                        <p class="text-xs opacity-70">@{{ post.username }} • {{ post.created_at }}</p>
+                    </div>
+                </div>
+                
+                {% if post.caption %}
+                    <p class="mb-4 font-medium text-slate-800 leading-relaxed">{{ post.caption | linkify_mentions | safe }}</p>
+                {% endif %}
+
+                {% if post.media_type == 'image' %}
+                    <div class="mb-4 rounded-lg overflow-hidden border-2 border-black">
+                        <img src="{{ url_for('static', filename='uploads/' + post.media_url) }}" class="w-full object-cover">
+                    </div>
+                {% elif post.media_type == 'video' %}
+                    <div class="mb-4 rounded-lg overflow-hidden border-2 border-black">
+                        <video controls class="w-full">
+                            <source src="{{ url_for('static', filename='uploads/' + post.media_url) }}" type="video/mp4">
+                        </video>
+                    </div>
+                {% endif %}
+
+                <div class="flex gap-6 text-gray-500 text-lg border-t-2 border-gray-100 pt-3 mt-2 border-dashed">
+                    <button onclick="toggleLikePost({{ post.id }})" class="flex items-center gap-1 hover:text-red-500 transition-colors group">
+                        <i id="icon-post-{{ post.id }}" class="{{ 'ri-heart-fill text-red-500' if post.user_has_liked > 0 else 'ri-heart-3-line' }} text-xl"></i>
+                        <span id="count-post-{{ post.id }}" class="text-xs {{ 'font-bold text-red-500' if post.user_has_liked > 0 else '' }}">
+                            {{ post.like_count }} Like
+                        </span>
+                    </button>
+                    <a href="{{ url_for('post.post_detail', post_id=post.id) }}" class="hover:text-blue-500 flex items-center gap-1">
+                        <i class="ri-chat-1-line text-xl"></i> 
+                        <span class="text-xs">Comment</span>
+                    </a>
+                </div>
+            </article>
+            {% endfor %}
+        </main>
+
+        <aside class="hidden md:block md:col-span-1 h-fit sticky top-24">
+            <div class="bg-white p-4 rounded-lg border-2 border-[#90EE90] shadow-[4px_4px_0px_0px_#000]">
+                <h3 class="font-bold mb-2 text-sm">Buat Postingan</h3>
+                <form action="{{ url_for('post.create_post') }}" method="POST" enctype="multipart/form-data">
+                    <textarea name="caption" class="w-full bg-gray-50 p-2 rounded border-2 border-gray-200 focus:border-black outline-none resize-none text-sm" rows="4" placeholder="Apa yang sedang terjadi?"></textarea>
+                    
+                    <input type="file" name="media_file" id="mediaInput" class="hidden" accept="image/*,video/*" onchange="previewFile()">
+                    
+                    <div id="previewContainer" class="hidden mt-2">
+                        <p id="fileName" class="text-[10px] text-blue-600 font-bold bg-blue-50 p-1 rounded border border-blue-200 truncate"></p>
+                    </div>
+
+                    <div class="flex justify-between items-center mt-3">
+                        <div class="flex gap-2 text-lg text-gray-600">
+                            <button type="button" onclick="document.getElementById('mediaInput').click()" class="hover:text-blue-500 transition"><i class="ri-image-add-line"></i></button>
+                            <button type="button" onclick="document.getElementById('mediaInput').click()" class="hover:text-green-500 transition"><i class="ri-video-add-line"></i></button>
+                        </div>
+                        <button type="submit" class="bg-[#87CEEB] text-black border-2 border-black px-4 py-1 rounded shadow-[2px_2px_0px_0px_#000] text-sm font-bold hover:translate-y-[1px] hover:shadow-none transition-all">
+                            Posting
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </aside>
+
+    </div>
+
+    <script>
+        function previewFile() {
+            const input = document.getElementById('mediaInput');
+            const preview = document.getElementById('previewContainer');
+            const fileName = document.getElementById('fileName');
+            if (input.files && input.files[0]) {
+                fileName.innerText = input.files[0].name;
+                preview.classList.remove('hidden');
+            }
+        }
+
+        function toggleLikePost(postId) {
+            fetch(`/like/${postId}`, { method: 'POST' })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    const icon = document.getElementById(`icon-post-${postId}`);
+                    const count = document.getElementById(`count-post-${postId}`);
+                    
+                    count.innerText = data.new_count + " Like";
+                    
+                    if (data.liked) {
+                        icon.className = "ri-heart-fill text-red-500 text-xl";
+                        count.classList.add("text-red-500", "font-bold");
+                    } else {
+                        icon.className = "ri-heart-3-line text-xl";
+                        count.classList.remove("text-red-500", "font-bold");
+                    }
+                } else {
+                    alert("Gagal like: " + data.message);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        var tribute = new Tribute({
+                values: function (text, cb) {
+                    fetch('/api/search_users?q=' + text)
+                        .then(res => res.json())
+                        .then(data => cb(data));
+                },
+                lookup: 'username',
+                fillAttr: 'username',
+                selectTemplate: function (item) {
+                    return '@' + item.original.username;
+                },
+                menuItemTemplate: function (item) {
+                    return '<span class="font-bold">@' + item.original.username + '</span>';
+                }
+            });
+
+            window.onload = function() {
+                tribute.attach(document.querySelectorAll('textarea'));
+            };
+        </script>
+</body>
+</html>

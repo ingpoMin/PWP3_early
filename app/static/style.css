@@ -1,0 +1,121 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap');
+
+body {
+    font-family: 'Outfit', sans-serif;
+    background-color: #f8fafc;
+}
+
+/* KELAS UTAMA: Membuat kotak seperti referensi */
+.neo-card {
+    border: 3px solid #000000;
+    border-radius: 12px;
+    box-shadow: 6px 6px 0px 0px #000000; /* Shadow hitam pekat */
+    transition: all 0.2s ease;
+}
+
+/* Efek saat diklik (tombol/kartu seolah ditekan) */
+.neo-card:active, .neo-btn:active {
+    transform: translate(3px, 3px);
+    box-shadow: 3px 3px 0px 0px #000000;
+}
+
+.neo-btn {
+    border: 2px solid #000000;
+    box-shadow: 4px 4px 0px 0px #000000;
+    font-weight: bold;
+    transition: all 0.1s;
+    cursor: pointer;
+}
+
+.neo-input {
+    border: 2px solid #000;
+    box-shadow: 4px 4px 0px 0px #ddd; /* Shadow input lebih halus */
+    outline: none;
+}
+.neo-input:focus {
+    box-shadow: 4px 4px 0px 0px #000;
+}
+
+/* Palet Warna Persis Referensi */
+.bg-ref-blue { background-color: #bae6fd; }   /* Biru Langit */
+.bg-ref-purple { background-color: #d8b4fe; } /* Ungu */
+.bg-ref-orange { background-color: #fdba74; } /* Oranye */
+.bg-ref-cyan { background-color: #a5f3fc; }   /* Cyan Overlay */
+
+/* ... css sebelumnya ... */
+.bg-ref-green { background-color: #86efac; }  /* Hijau Mint */
+.bg-ref-yellow { background-color: #fef08a; } /* Kuning Lembut */
+
+/* Utility untuk Comment Thread (Garis pinggir komentar balasan) */
+.reply-line {
+    border-left: 3px solid #000;
+    padding-left: 1rem;
+    margin-left: 1rem;
+}
+
+/* Layout Utama 3 Kolom */
+.main-layout {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr; /* Kiri(25%) Tengah(50%) Kanan(25%) */
+    gap: 20px;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* KOTAK KIRI (Kuning) */
+.sidebar-left {
+    background: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    border: 2px solid #FFD700; /* Border kuning sesuai sketsa */
+    height: fit-content;
+}
+
+/* Garis Pembatas (Ungu) */
+.purple-divider {
+    border: 0;
+    height: 3px;
+    background: #9370DB; /* Warna Ungu */
+    margin: 20px 0;
+}
+
+/* KOTAK KANAN (Hijau - Tempat Form) */
+.sidebar-right {
+     border: 2px solid #90EE90; 
+}
+
+.create-post-box {
+    background: #fff;
+    padding: 15px;
+    border-radius: 15px;
+    box-shadow: 5px 5px 0px #000; /* Style neo-brutalism kayak di ss */
+    border: 2px solid #000;
+}
+
+textarea {
+    width: 100%;
+    border: none;
+    resize: none;
+    outline: none;
+}
+
+.btn-posting {
+    background: #87CEEB; /* Biru muda */
+    border: 2px solid #000;
+    box-shadow: 3px 3px 0px #000;
+    font-weight: bold;
+    padding: 5px 15px;
+    cursor: pointer;
+}
+
+/* Agar responsif di HP (jadi 1 kolom ke bawah) */
+@media (max-width: 768px) {
+    .main-layout {
+        grid-template-columns: 1fr;
+    }
+    /* Di HP, mungkin urutannya mau diubah: Form posting paling atas */
+    .sidebar-right {
+        order: -1; 
+    }
+}

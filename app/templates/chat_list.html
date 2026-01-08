@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inbox</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 pb-20">
+
+    <nav class="bg-white border-b-4 border-black sticky top-0 z-50 px-4 py-3 mb-6">
+        <div class="max-w-2xl mx-auto flex items-center gap-3">
+            <a href="{{ url_for('feed.feed') }}" class="neo-btn bg-gray-100 p-2 rounded-full">
+                <i class="ri-arrow-left-line"></i>
+            </a>
+            <h1 class="text-xl font-bold">Pesan (DM)</h1>
+        </div>
+    </nav>
+
+    <main class="max-w-2xl mx-auto px-4">
+        <div class="neo-card bg-white p-4 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+            <h2 class="font-bold text-lg mb-4 border-b-2 border-black inline-block">Mulai Percakapan</h2>
+            
+            {% if users %}
+                <div class="space-y-2">
+                    {% for user in users %}
+                    <a href="{{ url_for('chat.chat_room', username=user.username) }}" class="flex items-center gap-3 p-3 hover:bg-ref-blue hover:text-white rounded-lg transition-colors border-2 border-transparent hover:border-black">
+                        <img src="{{ url_for('static', filename='uploads/' + user.profile_pic) }}" 
+                             class="w-12 h-12 rounded-full border-2 border-black bg-white object-cover"
+                             onerror="this.src='https://api.dicebear.com/7.x/avataaars/svg?seed={{ user.username }}'">
+                        
+                        <div class="flex-1">
+                            <h3 class="font-bold">{{ user.full_name }}</h3>
+                            <p class="text-xs opacity-70">@{{ user.username }}</p>
+                        </div>
+                        
+                        <i class="ri-chat-3-line text-xl"></i>
+                    </a>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-10 text-gray-500">
+                    <p>Belum ada teman.</p>
+                    <p class="text-sm">Follow seseorang dulu untuk mulai chat!</p>
+                </div>
+            {% endif %}
+        </div>
+    </main>
+
+</body>
+</html>

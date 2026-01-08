@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Felix</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 pb-20">
+
+    <nav class="p-4 max-w-2xl mx-auto">
+        <a href="feed.html" class="neo-btn bg-white px-3 py-2 rounded-full inline-flex items-center gap-2 text-sm">
+            <i class="ri-arrow-left-line"></i> Kembali
+        </a>
+    </nav>
+
+    <main class="max-w-2xl mx-auto px-4 mt-2">
+        
+        <div class="neo-card bg-ref-blue p-6 mb-6 text-center relative">
+            <div class="w-24 h-24 mx-auto rounded-full border-4 border-black overflow-hidden bg-white mb-4 shadow-[4px_4px_0_0_#000]">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" class="w-full h-full object-cover">
+            </div>
+            
+            <h1 class="text-2xl font-bold">Felix Kjellberg</h1>
+            <p class="text-sm font-mono mb-4">@pewdiepie</p>
+            
+            <p class="mb-6 max-w-sm mx-auto font-medium">
+                Gamer, Youtuber, dan penikmat pasta. 🍝
+            </p>
+
+            <div class="flex justify-center gap-8 mb-6 border-y-2 border-black/10 py-4">
+                <div class="text-center">
+                    <span class="block font-bold text-xl">4.2k</span>
+                    <span class="text-xs uppercase">Post</span>
+                </div>
+                <div class="text-center">
+                    <span class="block font-bold text-xl">105m</span>
+                    <span class="text-xs uppercase">Followers</span>
+                </div>
+                <div class="text-center">
+                    <span class="block font-bold text-xl">1</span>
+                    <span class="text-xs uppercase">Following</span>
+                </div>
+            </div>
+
+            <div class="flex justify-center gap-3">
+                <button class="neo-btn bg-white px-6 py-2 rounded-lg text-sm hover:bg-green-200">
+                    <i class="ri-user-add-line"></i> Follow
+                </button>
+                <button class="neo-btn bg-ref-yellow px-4 py-2 rounded-lg text-sm">
+                    <i class="ri-chat-3-line"></i>
+                </button>
+            </div>
+        </div>
+        
+        <h3 class="font-bold text-lg mb-4 ml-1">Postingan Felix</h3>
+        <article class="neo-card bg-white p-5 mb-4">
+            <p class="font-medium">Nasi goreng tadi enak banget!</p>
+        </article>
+
+    </main>
+</body>
+</html>

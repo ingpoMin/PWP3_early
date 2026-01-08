@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil {{ user.full_name }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 pb-20">
+
+    <nav class="bg-white border-b-4 border-black sticky top-0 z-50 px-4 py-3 mb-6">
+        <div class="max-w-2xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <a href="{{ url_for('feed.feed') }}" class="neo-btn bg-gray-100 p-2 rounded-full">
+                    <i class="ri-arrow-left-line"></i>
+                </a>
+                <h1 class="text-xl font-bold">Profil</h1>
+            </div>
+
+            {% if is_own_profile %}
+                <a href="{{ url_for('auth.logout') }}" class="text-red-500 font-bold text-sm hover:bg-red-50 px-3 py-1 rounded-full transition-colors border border-transparent hover:border-red-200">
+                    Logout <i class="ri-logout-box-r-line ml-1"></i>
+                </a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <main class="max-w-2xl mx-auto px-4">
+        
+        <div class="neo-card bg-white p-6 mb-8 border-2 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-center relative">
+            <img src="{{ url_for('static', filename='uploads/' + user.profile_pic) }}" 
+                 class="w-24 h-24 rounded-full border-4 border-black bg-gray-200 mx-auto -mt-12 mb-4 object-cover"
+                 onerror="this.src='https://api.dicebear.com/7.x/avataaars/svg?seed={{ user.username }}'">
+            
+            <h2 class="text-2xl font-bold">{{ user.full_name }}</h2>
+            <p class="text-gray-500 text-sm mb-4">@{{ user.username }}</p>
+            
+            <p class="mb-6 max-w-sm mx-auto text-gray-700 italic">
+                {% if user.bio %}
+                    "{{ user.bio }}"
+                {% else %}
+                    Belum ada bio.
+                {% endif %}
+            </p>
+
+            <div class="flex justify-center gap-8 mb-6 border-y-2 border-gray-100 py-4">
+                <div class="text-center">
+                    <span class="block font-bold text-xl">{{ post_count }}</span>
+                    <span class="text-xs text-gray-500 uppercase tracking-wide">Postingan</span>
+                </div>
+                
+                <div class="text-center">
+                    <span class="block font-bold text-xl">{{ follower_count }}</span> 
+                    <span class="text-xs text-gray-500 uppercase tracking-wide">Pengikut</span>
+                </div>
+
+                <div class="text-center">
+                    <span class="block font-bold text-xl">{{ following_count }}</span>
+                    <span class="text-xs text-gray-500 uppercase tracking-wide">Mengikuti</span>
+                </div>
+            </div>
+
+            <div class="flex justify-center gap-3">
+                {% if is_own_profile %}
+                    <a href="{{ url_for('feed.edit_profile') }}" class="neo-btn bg-yellow-300 px-6 py-2 rounded-full font-bold border-2 border-black hover:shadow-none shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all">
+                        <i class="ri-edit-line"></i> Edit Profil
+                    </a>
+                {% else %}
+                    {% if is_following %}
+                        <a href="{{ url_for('feed.unfollow', username=user.username) }}" class="neo-btn bg-red-100 text-red-600 px-6 py-2 rounded-full font-bold border-2 border-black hover:bg-red-200 transition-all">
+                            <i class="ri-user-unfollow-line"></i> Unfollow
+                        </a>
+                    {% else %}
+                        <a href="{{ url_for('feed.follow', username=user.username) }}" class="neo-btn bg-ref-blue px-6 py-2 rounded-full font-bold border-2 border-black hover:shadow-none shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all">
+                            <i class="ri-user-add-line"></i> Follow
+                        </a>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+
+        <h3 class="font-bold text-lg mb-4 border-b-2 border-black inline-block">Postingan Terbaru</h3>
+        
+        <div class="grid grid-cols-3 gap-1 sm:gap-4">
+            {% for post in posts %}
+                <div class="aspect-square bg-gray-200 relative group overflow-hidden border-2 border-black rounded-lg">
+                    <a href="{{ url_for('post.post_detail', post_id=post.id) }}" class="block w-full h-full">
+                        {% if post.media_type == 'image' %}
+                            <img src="{{ url_for('static', filename='uploads/' + post.media_url) }}" class="w-full h-full object-cover">
+                        {% elif post.media_type == 'video' %}
+                            <video class="w-full h-full object-cover">
+                                <source src="{{ url_for('static', filename='uploads/' + post.media_url) }}">
+                            </video>
+                            <div class="absolute top-2 left-2 bg-black text-white p-1 rounded-full text-xs z-0">
+                                <i class="ri-movie-fill"></i>
+                            </div>
+                        {% else %}
+                            <div class="w-full h-full flex items-center justify-center p-2 text-center text-xs bg-ref-purple text-black font-medium">
+                                {{ post.caption[:50] }}...
+                            </div>
+                        {% endif %}
+                        
+                        <div class="absolute inset-0 bg-black/50 hidden group-hover:flex items-center justify-center text-white font-bold opacity-0 group-hover:opacity-100 transition-opacity z-0">
+                            View
+                        </div>
+                    </a>
+
+                    {% if is_own_profile %}
+                        <form action="{{ url_for('post.delete_post', post_id=post.id) }}" method="POST" 
+                              onsubmit="return confirm('Yakin ingin menghapus postingan ini?')"
+                              class="absolute top-2 right-2 z-10 hidden group-hover:block">
+                            <button type="submit" class="bg-red-500 text-white w-8 h-8 rounded-full border-2 border-black hover:bg-red-600 flex items-center justify-center shadow-md transition-all">
+                                <i class="ri-delete-bin-line"></i>
+                            </button>
+                        </form>
+                    {% endif %}
+                </div>
+            {% else %}
+                <p class="col-span-3 text-center text-gray-500 py-10">Belum ada postingan.</p>
+            {% endfor %}
+        </div>
+
+    </main>
+</body>
+</html>
