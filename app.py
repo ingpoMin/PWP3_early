@@ -31,22 +31,30 @@ def home():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        
+        username = request.form.get('username')
+        password = request.form.get('password')
+
+        if not username or not password:
+            flash('Form tidak lengkap', 'danger')
+            return render_template('login.html')
+
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM users WHERE username = %s', (username,))
+        cursor.execute(
+            'SELECT * FROM users WHERE username = %s',
+            (username,)
+        )
         account = cursor.fetchone()
-        
+
         if account and bcrypt.check_password_hash(account['password_hash'], password):
             session['loggedin'] = True
             session['id'] = account['id']
             session['username'] = account['username']
             return redirect(url_for('feed'))
-        else:
-            flash('Username atau Password salah bro!', 'danger')
-            
+
+        flash('Username atau password salah', 'danger')
+
     return render_template('login.html')
+
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():

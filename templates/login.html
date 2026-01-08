@@ -17,20 +17,21 @@
 
         <form action="{{ url_for('login') }}" method="POST"> <div class="mb-4">
                 <label class="block font-bold mb-1">Username</label>
-                <input type="text" name ="username"class="neo-input w-full p-3 rounded-lg bg-white" placeholder="@namamu">
+                <input type="text" name="username" class="neo-input w-full p-3 rounded-lg bg-white" placeholder="@namamu">
             </div>
             
             <div class="mb-6">
                 <label class="block font-bold mb-1">Password</label>
-                <input type="password" name="password" class="neo-input w-full p-3 rounded-lg bg-white" placeholder="********">
+                <input type="password" name="password" class="neo-input w-full p-3 rounded-lg bg-white focus:outline-none" placeholder="••••••••">
             </div>
 
             <button type="submit" class="neo-btn bg-ref-orange text-black w-full py-3 rounded-lg text-lg hover:bg-orange-400">
                 Masuk Sekarang
             </button>
+
         </form>
         <p class="mt-4 text-center text-sm">
-            Belum punya akun? <a href="register.html" class="font-bold underline">Daftar di sini</a>
+            Belum punya akun? <a href="{{ url_for('register') }}" class="font-bold underline">Daftar di sini</a>
         </p>
     </div>
 
