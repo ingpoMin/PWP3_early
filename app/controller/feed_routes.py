@@ -1,5 +1,5 @@
 from flask import Blueprint, request, redirect, url_for, session, flash
-from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
+from flask import Blueprint, render_template, request, redirect, url_for, session, Flask, current_app
 from werkzeug.utils import secure_filename
 from flask_mysqldb import MySQL
 import os
@@ -77,7 +77,7 @@ def my_profile():
 @feed_bp.route('/edit_profile', methods=['GET', 'POST'])
 def edit_profile():
     if 'loggedin' not in session:
-        return redirect(url_for('authlogin'))
+        return redirect(url_for('auth.login'))
 
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
@@ -98,15 +98,17 @@ def edit_profile():
         if 'profile_pic' in request.files:
             file = request.files['profile_pic']
             if file and file.filename != '' and allowed_file(file.filename):
-                if filename != 'default.jpg' and filename:
+                if filename and filename != 'default.jpg':
                     try:
-                        os.remove(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                    except:
-                        pass
+                        old_file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+                        if os.path.exists(old_file_path):
+                            os.remove(old_file_path)
+                    except Exception as e:
+                        print(f"Gagal hapus foto lama: {e}")
                 
                 filename = secure_filename(file.filename)
                 filename = f"{int(time.time())}_{filename}"
-                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
 
         cursor.execute('''
             UPDATE users SET full_name = %s, username = %s, bio = %s, profile_pic = %s
@@ -114,6 +116,7 @@ def edit_profile():
         ''', (full_name, username, bio, filename, session['id']))
         
         mysql.connection.commit()
+        
         session['username'] = username
         
         flash('Profil berhasil diperbarui!', 'success')

@@ -22,7 +22,10 @@ def create_app():
     app.config['MYSQL_PASSWORD'] = os.getenv('DB_PASSWORD')
     app.config['MYSQL_DB'] = os.getenv('DB_NAME')
     app.secret_key = os.getenv('SECRET_KEY')
-    app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+    app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path, 'static', 'uploads')
+
+    if not os.path.exists(app.config['UPLOAD_FOLDER']):
+        os.makedirs(app.config['UPLOAD_FOLDER'])
 
     mysql.init_app(app)
     bcrypt.init_app(app)

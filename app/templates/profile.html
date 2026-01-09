@@ -74,7 +74,7 @@
                             <i class="ri-user-unfollow-line"></i> Unfollow
                         </a>
                     {% else %}
-                        <a href="{{ url_for('feed.follow', username=user.username) }}" class="neo-btn bg-ref-blue px-6 py-2 rounded-full font-bold border-2 border-black hover:shadow-none shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all">
+                        <a href="{{ url_for('feed.follow', user_id=user.id) }}" class="neo-btn bg-ref-blue px-6 py-2 rounded-full font-bold border-2 border-black hover:shadow-none shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all">
                             <i class="ri-user-add-line"></i> Follow
                         </a>
                     {% endif %}

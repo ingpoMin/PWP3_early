@@ -53,7 +53,7 @@ def register():
         
         hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
         
-        cursor = mysql.connection.cursor()
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         try:
             cursor.execute('INSERT INTO users (full_name, username, email, password_hash, bio) VALUES (%s, %s, %s, %s, %s)', 
                            (full_name, username, email, hashed_password, bio))
